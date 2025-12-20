@@ -25,12 +25,11 @@ app.add_middleware(
 class FallData(BaseModel):
     room_id: str
     status: str
-    nilai_sensor: float
 
 @app.post("/fall")
 def insert_fall(data: FallData):
     print("[API] Received POST /fall:", data.dict())
-    save_sensor_data(data.room_id, data.status, float(data.nilai_sensor))
+    save_sensor_data(data.room_id, data.status)
     return {"message": "saved"}
 
 @app.get("/fall")
@@ -55,13 +54,12 @@ def on_message(client, userdata, msg):
 
         room_id = payload.get("room_id")
         status = payload.get("status")
-        nilai_sensor = payload.get("nilai_sensor")
 
         if room_id is None or status is None: 
             print("[MQTT] ERROR: Payload tidak lengkap ->", payload)
             return
 
-        save_sensor_data(room_id, status, nilai_sensor)
+        save_sensor_data(room_id, status)
         print("[MQTT] SAVED:", room_id, status)
 
     except Exception as e:
