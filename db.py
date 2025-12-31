@@ -15,7 +15,7 @@ def get_db():
     )
 
 
-def save_sensor_data(room_id, status, nilai_sensor=None):
+def save_sensor_data(room_id, status=None):
     db = get_db()
     cursor = db.cursor()
 
@@ -31,17 +31,17 @@ def save_sensor_data(room_id, status, nilai_sensor=None):
         # Update jika sudah ada
         cursor.execute("""
             UPDATE status_detection_fall
-            SET status = %s, nilai_sensor = %s
+            SET status = %s
             WHERE room_id = %s
-        """, (status, nilai_sensor, room_id))
+        """, (status, room_id))
         print("[DB] UPDATED:", room_id, status)
 
     else:
         # Insert baru
         cursor.execute("""
-            INSERT INTO status_detection_fall (room_id, status, nilai_sensor)
-            VALUES (%s, %s, %s)
-        """, (room_id, status, nilai_sensor))
+            INSERT INTO status_detection_fall (room_id, status)
+            VALUES (%s, %s)
+        """, (room_id, status))
         print("[DB] INSERTED:", room_id, status)
 
     cursor.close()
